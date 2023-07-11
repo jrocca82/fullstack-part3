@@ -1,0 +1,21 @@
+html, body {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-items: center;
+  width: 100vw
+}
+
+.successMessage {
+  border: solid 2px darkgreen;
+  background-color: grey;
+  padding: 5px;
+  color: darkgreen
+}
+
+.errorMessage {
+  border: solid 2px darkred;
+  background-color: grey;
+  padding: 5px;
+  color: darkred
+}
