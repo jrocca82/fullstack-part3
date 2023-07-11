@@ -54,8 +54,8 @@ app.get("/api/persons/:id", (req, res) => {
 
 app.delete("/api/persons/:id", (req, res) => {
   const id = Number(req.params.id);
-  console.log(id);
   people = people.filter((person) => person.id !== id);
+  noOfPeople -= 1;
 
   res.status(204).end();
 });
@@ -68,21 +68,21 @@ const generateId = () => {
 app.post("/api/persons", jsonParser, (req, res) => {
   const body = req.body;
 
-  console.log(body);
-
   if (!body.name || !body.number) {
     return res.status(400).json({
       error: "Name or number missing",
     });
   }
 
-  people.forEach(person => {
-    if(person.name === body.name) {
+  people.forEach((person) => {
+    if (person.name === body.name) {
       return res.status(400).json({
         error: "Person already exists in phonebook.",
       });
     }
-  })
+  });
+
+  noOfPeople += 1;
 
   const newPerson = {
     name: body.name,
