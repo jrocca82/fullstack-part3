@@ -1,8 +1,13 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const morgan = require('morgan')
 
 const app = express();
-const jsonParser = bodyParser.json();
+app.use(bodyParser.json());
+
+morgan.token('data', function (req, res) { return JSON.stringify(req.body) })
+
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :data'));
 
 let people = [
   {
@@ -65,7 +70,7 @@ const generateId = () => {
   return maxId + 1;
 };
 
-app.post("/api/persons", jsonParser, (req, res) => {
+app.post("/api/persons", (req, res) => {
   const body = req.body;
 
   if (!body.name || !body.number) {
