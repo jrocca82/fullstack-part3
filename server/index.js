@@ -95,8 +95,11 @@ app.put("/api/notes/:id", (req, res, next) => {
     number: body.number,
   };
 
+  console.log("here", person);
+
   Person.findByIdAndUpdate(req.params.id, person, { new: true })
     .then((updatedPerson) => {
+      console.log("this", updatedPerson);
       res.json(updatedPerson);
     })
     .catch((error) => next(error));
