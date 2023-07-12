@@ -20,6 +20,7 @@ app.use(
 );
 
 app.get("/api/persons", (req, res) => {
+  console.log("here");
   Person.find({}).then((person) => {
     res.json(person);
   });
