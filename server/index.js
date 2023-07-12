@@ -8,7 +8,7 @@ const Person = require("./models/person");
 
 const app = express();
 app.use(bodyParser.json());
-app.use(express.static("../backend"));
+app.use(express.static("../build"));
 app.use(cors());
 
 morgan.token("data", function (req, res) {
@@ -87,7 +87,7 @@ app.post("/api/persons", (req, res) => {
   });
 });
 
-app.put("/api/notes/:id", (req, res, next) => {
+app.put("/api/persons/:id", (req, res, next) => {
   const body = req.body;
 
   const person = {
@@ -95,11 +95,8 @@ app.put("/api/notes/:id", (req, res, next) => {
     number: body.number,
   };
 
-  console.log("here", person);
-
   Person.findByIdAndUpdate(req.params.id, person, { new: true })
     .then((updatedPerson) => {
-      console.log("this", updatedPerson);
       res.json(updatedPerson);
     })
     .catch((error) => next(error));

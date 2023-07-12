@@ -22,7 +22,6 @@ const updatePerson = (person) => {
       `${person.name} is already added to the phone book, would you like to replace their old number with a new one?`
     )
   ) {
-    console.log("my person", person);
     update(person.id, { name: person.name, number: person.number }).catch((e) =>
       console.log("fail", e)
     );

@@ -13,6 +13,7 @@ const App = () => {
   const [filter, setFilter] = useState("");
 
   const [isAddSuccessful, setIsAddSuccessful] = useState(false);
+  const [isUpdateSuccessful, setIsUpdateSuccessful] = useState(false);
   const [errorMessage, setErrorMessage] = useState();
 
   const onSubmit = (e) => {
@@ -23,8 +24,11 @@ const App = () => {
 
     for (let i = 0; i < persons.length; i++) {
       if (newPerson.name.toLowerCase() === persons[i].name.toLowerCase()) {
-        const id = persons[i]._id;
-        updatePerson({ id, number: newPerson.number });
+        updatePerson({ ...persons[i], number: newPerson.number });
+        setIsUpdateSuccessful(true);
+        setTimeout(() => {
+          setIsUpdateSuccessful(true);
+        }, 1000);
         setNewPerson({ name: undefined, number: undefined });
         return;
       }
@@ -36,13 +40,13 @@ const App = () => {
         setIsAddSuccessful(true);
         setTimeout(() => {
           setIsAddSuccessful(true);
-        }, 5000);
+        }, 1000);
       })
       .catch((e) => {
         setErrorMessage(`Error adding ${newPerson.name}`);
         setTimeout(() => {
           setErrorMessage(null);
-        }, 5000);
+        }, 1000);
       });
 
     setNewPerson({ name: undefined, number: undefined });
@@ -62,6 +66,11 @@ const App = () => {
       <FilterInput filter={filter} setFilter={setFilter} />
       {isAddSuccessful && (
         <h2 className="successMessage">Successfully added {newPerson.name}</h2>
+      )}
+      {isUpdateSuccessful && (
+        <h2 className="successMessage">
+          Successfully updated {newPerson.name}
+        </h2>
       )}
       {errorMessage && <h2 className="errorMessage">{errorMessage}</h2>}
       <AddNewForm
