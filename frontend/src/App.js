@@ -23,7 +23,8 @@ const App = () => {
 
     for (let i = 0; i < persons.length; i++) {
       if (newPerson.name.toLowerCase() === persons[i].name.toLowerCase()) {
-        updatePerson({ ...persons[i], number: newPerson.number });
+        const id = persons[i]._id;
+        updatePerson({ id, number: newPerson.number });
         setNewPerson({ name: undefined, number: undefined });
         return;
       }
@@ -59,7 +60,9 @@ const App = () => {
     <div>
       <h1>Phonebook</h1>
       <FilterInput filter={filter} setFilter={setFilter} />
-      {isAddSuccessful && <h2 className="successMessage">Successfully added {newPerson.name}</h2>}
+      {isAddSuccessful && (
+        <h2 className="successMessage">Successfully added {newPerson.name}</h2>
+      )}
       {errorMessage && <h2 className="errorMessage">{errorMessage}</h2>}
       <AddNewForm
         newPerson={newPerson}
