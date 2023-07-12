@@ -20,7 +20,6 @@ app.use(
 );
 
 app.get("/api/persons", (req, res) => {
-  console.log("here");
   Person.find({}).then((person) => {
     res.json(person);
   });
@@ -36,14 +35,9 @@ app.get("/info", async (req, res) => {
 });
 
 app.get("/api/persons/:id", (req, res) => {
-  const id = Number(req.params.id);
-  const person = people.find((person) => person.id === id);
-
-  if (person) {
+  Person.findById(req.params.id).then((person) => {
     res.json(person);
-  } else {
-    res.status(404).end();
-  }
+  });
 });
 
 app.delete("/api/persons/:id", (req, res) => {
@@ -53,37 +47,24 @@ app.delete("/api/persons/:id", (req, res) => {
   res.status(204).end();
 });
 
-const generateId = () => {
-  const maxId = people.length > 0 ? Math.max(...people.map((n) => n.id)) : 0;
-  return maxId + 1;
-};
-
 app.post("/api/persons", (req, res) => {
   const body = req.body;
 
-  if (!body.name || !body.number) {
-    return res.status(400).json({
-      error: "Name or number missing",
-    });
+  if (body.name === undefined) {
+    return res.status(400).json({ error: "Entry name missing" });
+  }
+  if (body.number === undefined) {
+    return res.status(400).json({ error: "Entry number missing" });
   }
 
-  people.forEach((person) => {
-    if (person.name === body.name) {
-      return res.status(400).json({
-        error: "Person already exists in phonebook.",
-      });
-    }
-  });
-
-  const newPerson = {
+  const person = new Person({
     name: body.name,
     number: body.number,
-    id: generateId(),
-  };
+  });
 
-  people = people.concat(newPerson);
-
-  res.json(body);
+  person.save().then((savedPerson) => {
+    res.json(savedPerson);
+  });
 });
 
 const PORT = process.env.PORT;
