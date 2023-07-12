@@ -20,17 +20,16 @@ app.use(
 );
 
 const errorHandler = (error, request, response, next) => {
-  console.error(error.message);
+  console.error("SHE RUNNININGGGGGG");
 
   if (error.name === "CastError") {
     return response.status(400).send({ error: "malformatted id" });
+  } else if (error.name === "ValidationError") {
+    return response.status(400).json({ error: error.message });
   }
 
   next(error);
 };
-
-// this has to be the last loaded middleware.
-app.use(errorHandler);
 
 app.get("/api/persons", (req, res) => {
   Person.find({}).then((person) => {
@@ -67,7 +66,7 @@ app.delete("/api/persons/:id", (req, res, next) => {
     .catch((error) => next(error));
 });
 
-app.post("/api/persons", (req, res) => {
+app.post("/api/persons", (req, res, next) => {
   const body = req.body;
 
   if (body.name === undefined) {
@@ -82,9 +81,12 @@ app.post("/api/persons", (req, res) => {
     number: body.number,
   });
 
-  person.save().then((savedPerson) => {
-    res.json(savedPerson);
-  });
+  person
+    .save()
+    .then((savedPerson) => {
+      res.json(savedPerson);
+    })
+    .catch((error) => next(error));
 });
 
 app.put("/api/persons/:id", (req, res, next) => {
@@ -95,12 +97,18 @@ app.put("/api/persons/:id", (req, res, next) => {
     number: body.number,
   };
 
-  Person.findByIdAndUpdate(req.params.id, person, { new: true })
+  Person.findByIdAndUpdate(req.params.id, person, {
+    new: true,
+    runValidators: true,
+    context: "query",
+  })
     .then((updatedPerson) => {
       res.json(updatedPerson);
     })
     .catch((error) => next(error));
 });
+
+app.use(errorHandler);
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {

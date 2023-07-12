@@ -24,12 +24,21 @@ const App = () => {
 
     for (let i = 0; i < persons.length; i++) {
       if (newPerson.name.toLowerCase() === persons[i].name.toLowerCase()) {
-        updatePerson({ ...persons[i], number: newPerson.number });
-        setIsUpdateSuccessful(true);
-        setTimeout(() => {
-          setIsUpdateSuccessful(true);
-        }, 1000);
-        setNewPerson({ name: undefined, number: undefined });
+        updatePerson({ ...persons[i], number: newPerson.number })
+          .then((res) => {
+            setIsUpdateSuccessful(true);
+            setTimeout(() => {
+              setIsUpdateSuccessful(false);
+            }, 3000);
+          })
+          .catch((e) => {
+            setErrorMessage(
+              `Error updating ${newPerson.name}. ${e.response.data.error}`
+            );
+            setTimeout(() => {
+              setErrorMessage(null);
+            }, 3000);
+          });
         return;
       }
     }
@@ -39,14 +48,16 @@ const App = () => {
         setPersons(persons.concat(response));
         setIsAddSuccessful(true);
         setTimeout(() => {
-          setIsAddSuccessful(true);
-        }, 1000);
+          setIsAddSuccessful(false);
+        }, 3000);
       })
       .catch((e) => {
-        setErrorMessage(`Error adding ${newPerson.name}`);
+        setErrorMessage(
+          `Error adding ${newPerson.name}. ${e.response.data.error}`
+        );
         setTimeout(() => {
           setErrorMessage(null);
-        }, 1000);
+        }, 3000);
       });
 
     setNewPerson({ name: undefined, number: undefined });
@@ -65,14 +76,14 @@ const App = () => {
       <h1>Phonebook</h1>
       <FilterInput filter={filter} setFilter={setFilter} />
       {isAddSuccessful && (
-        <h2 className="successMessage">Successfully added {newPerson.name}</h2>
+        <p className="successMessage">Successfully added {newPerson.name}</p>
       )}
-      {isUpdateSuccessful && (
-        <h2 className="successMessage">
+      {isUpdateSuccessful && !errorMessage && (
+        <p className="successMessage">
           Successfully updated {newPerson.name}
-        </h2>
+        </p>
       )}
-      {errorMessage && <h2 className="errorMessage">{errorMessage}</h2>}
+      {errorMessage && <p className="errorMessage">{errorMessage}</p>}
       <AddNewForm
         newPerson={newPerson}
         setNewPerson={setNewPerson}

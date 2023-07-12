@@ -13,10 +13,12 @@ const create = async (newObject) => {
 
 const update = async (id, newObject) => {
   const request = axios.put(`${baseUrl}/${id}`, newObject);
-  return request.then((response) => response.data);
+  return request.then((response) => {
+    return response.data;
+  });
 };
 
-const updatePerson = (person) => {
+const updatePerson = async (person) => {
   if (
     window.confirm(
       `${person.name} is already added to the phone book, would you like to replace their old number with a new one?`
